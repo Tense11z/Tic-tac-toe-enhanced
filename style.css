@@ -1,0 +1,91 @@
+@font-face {
+    font-family: 'SinclairR';
+    src: url('fonts/FSSinclairBold.otf') format('opentype');
+    /* Specify font format */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-family: 'SinclairR', sans-serif;
+    line-height: 0;
+}
+
+:root {
+    --cellSize: calc(min(100vh, 100vw)/1.5);
+    --cellFontSize: calc(min(20dvh, 20dvw));
+    --headerAndFooterFontSize: calc(min(5dvh, 5dvw));
+}
+
+header,
+footer {
+    display: flex;
+    height: 10vh;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--headerAndFooterFontSize);
+}
+
+body {
+    background-color: #2b2a37;
+    height: 80vh;
+    width: auto;
+    margin: 0;
+}
+
+#main {
+    height: 100%;
+    width: auto;
+}
+
+#game {
+    height: 100%;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.board {
+    font-size: var(--cellFontSize);
+    display: grid;
+    width: var(--cellSize);
+    height: var(--cellSize);
+    grid-template-columns: repeat(3, 1fr);
+    user-select: none;
+}
+
+
+
+
+.cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: solid white;
+    cursor: pointer;
+}
+
+.board :first-child,
+:nth-child(4),
+:nth-child(7) {
+    border-left: none;
+}
+
+.board :nth-child(3n+3) {
+    border-right: none;
+}
+
+.board :nth-child(-n+3) {
+    border-top: none;
+}
+
+.board :nth-child(n+7) {
+    border-bottom: none;
+}
+
+.cell:hover {
+    transition: all 0.3s ease-in-out;
+    background-color: rgba(255, 0, 89, 0.3);
+}

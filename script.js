@@ -7,6 +7,8 @@ let playerZero = 0;
 let playerOne = 1;
 let playerZeroInput = '';
 let playerOneInput = '';
+let playerZeroArr = new Array;
+let playerOneArr = new Array;
 
 // function to clear board
 function clearBoard() {
@@ -15,6 +17,7 @@ function clearBoard() {
     }
 }
 
+// randomize for player order, will be needed it future
 function playerOrder() {
     currentPlayer = Math.floor(Math.random() * 2);
     if (currentPlayer === playerZero) {
@@ -28,12 +31,35 @@ function playerOrder() {
     }
 }
 
+// function to switch player turn
 function switchPlayer() {
     if (currentPlayer != undefined) {
         if (currentPlayer === 0) {
             currentPlayer = 1;
         } else {
             currentPlayer = 0;
+        }
+    }
+}
+
+// function to remove 1st input in case player's input amount >3
+function removeFirst() {
+    if (playerZeroArr.length > 3) {
+        boardElement.children[playerZeroArr[0]].textContent = ''
+        playerZeroArr.shift();
+    }
+    if (playerOneArr.length > 3) {
+        boardElement.children[playerOneArr[0]].textContent = ''
+        playerOneArr.shift();
+    }
+}
+
+function checkWinCondition() {
+    if (playerOneArr.length == 3 || playerZeroArr.length == 3) {
+        if (currentPlayer === 0) {
+
+        } else {
+
         }
     }
 }
@@ -45,13 +71,17 @@ Array.from(boardElement.children).forEach((cell, index) => {
         if (clickedCell.textContent == '') {
             if (currentPlayer === 0) {
                 clickedCell.textContent = playerZeroInput;
+                playerZeroArr.push(index);
+                removeFirst()
                 switchPlayer();
             } else {
                 clickedCell.textContent = playerOneInput;
+                playerOneArr.push(index);
+                removeFirst()
                 switchPlayer();
             }
         }
-        console.log(index);
+        console.log(index, playerZeroArr, playerOneArr);
     });
 });
 
@@ -60,5 +90,7 @@ Array.from(boardElement.children).forEach((cell, index) => {
 function initGame() {
     clearBoard();
     playerOrder();
+    playerZeroArr = new Array;
+    playerOneArr = new Array;
 }
 

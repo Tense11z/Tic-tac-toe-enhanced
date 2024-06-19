@@ -1,5 +1,6 @@
 // selecting DOM elements
 let boardElement = document.querySelector('.board');
+let turnElement = document.querySelector('#turn');
 
 //game Variables
 let currentPlayer = undefined;
@@ -38,10 +39,13 @@ function playerOrder() {
         console.log(`playerZero starts`)
         playerZeroInput = 'x';
         playerOneInput = 'o'; //○
+        turnElement.style.paddingLeft = 'calc(45% / 2 - (53px / 2))';
     } else {
         console.log(`playerOne starts`);
         playerZeroInput = 'o';
         playerOneInput = 'x';
+        turnElement.style.paddingLeft = 'calc(45% / 2 - (53px / 2) + 55%)';
+
     }
 }
 
@@ -50,8 +54,10 @@ function switchPlayer() {
     if (currentPlayer != undefined) {
         if (currentPlayer === 0) {
             currentPlayer = 1;
+            turnElement.style.paddingLeft = 'calc(45% / 2 - (53px / 2) + 55%)';
         } else {
             currentPlayer = 0;
+            turnElement.style.paddingLeft = 'calc(45% / 2 - (53px / 2))';
         }
     }
 }

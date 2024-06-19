@@ -74,12 +74,14 @@ function checkWinCondition() {
         if (currentPlayer === 0) {
             for (let i = 0; i < winConditions.length; i += 1) {
                 if (playerZeroArr.every(elem => winConditions[i].includes(elem))) {
+                    playerZeroArr.forEach(elem => boardElement.children[elem].classList.add('win'));
                     return console.log(`${currentPlayer} has won`)
                 }
             }
         } else {
             for (let i = 0; i < winConditions.length; i += 1) {
                 if (playerOneArr.every(elem => winConditions[i].includes(elem))) {
+                    playerOneArr.forEach(elem => boardElement.children[elem].classList.add('win'));
                     return console.log(`${currentPlayer} has won`)
                 }
             }
@@ -117,5 +119,6 @@ function initGame() {
     playerOrder();
     playerZeroArr = new Array;
     playerOneArr = new Array;
+    Array.from(boardElement.children).forEach(cell => cell.classList.remove('win'));
 }
 

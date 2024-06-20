@@ -10,6 +10,7 @@ let playerZeroInput = '';
 let playerOneInput = '';
 let playerZeroArr = new Array;
 let playerOneArr = new Array;
+let gameFlag = false;
 const winConditions = [
     // Rows
     [0, 1, 2],
@@ -39,25 +40,32 @@ function playerOrder() {
         console.log(`playerZero starts`)
         playerZeroInput = 'x';
         playerOneInput = 'o'; //○
-        turnElement.style.paddingLeft = 'calc(45% / 2 - (53px / 2))';
+        turnElement.style.marginLeft = 'calc(43% / 2 - 5%)';
     } else {
         console.log(`playerOne starts`);
         playerZeroInput = 'o';
         playerOneInput = 'x';
-        turnElement.style.paddingLeft = 'calc(45% / 2 - (53px / 2) + 55%)';
-
+        turnElement.style.marginLeft = 'calc(43% + 43% / 2 + 5%)';
     }
 }
 
 // function to switch player turn
 function switchPlayer() {
-    if (currentPlayer != undefined) {
-        if (currentPlayer === 0) {
-            currentPlayer = 1;
-            turnElement.style.paddingLeft = 'calc(45% / 2 - (53px / 2) + 55%)';
-        } else {
-            currentPlayer = 0;
-            turnElement.style.paddingLeft = 'calc(45% / 2 - (53px / 2))';
+    if (!gameFlag) {
+        if (currentPlayer != undefined) {
+            if (currentPlayer === 0) {
+                currentPlayer = 1;
+                turnElement.style.marginLeft = 'calc(43% + 43% / 2 + 5%)';
+                if (playerOneArr.length === 3) {
+                    boardElement.children[playerOneArr[0]].classList.add('expiring');
+                }
+            } else {
+                currentPlayer = 0;
+                turnElement.style.marginLeft = 'calc(43% / 2 - 5%)';
+                if (playerZeroArr.length === 3) {
+                    boardElement.children[playerZeroArr[0]].classList.add('expiring');
+                }
+            }
         }
     }
 }
@@ -65,13 +73,16 @@ function switchPlayer() {
 // function to remove 1st input in case player's input amount >3
 function removeFirst() {
     if (playerZeroArr.length > 3) {
-        boardElement.children[playerZeroArr[0]].textContent = ''
+        boardElement.children[playerZeroArr[0]].textContent = '';
+        boardElement.children[playerZeroArr[0]].classList.remove('expiring');
         playerZeroArr.shift();
     }
     if (playerOneArr.length > 3) {
-        boardElement.children[playerOneArr[0]].textContent = ''
+        boardElement.children[playerOneArr[0]].textContent = '';
+        boardElement.children[playerOneArr[0]].classList.remove('expiring');
         playerOneArr.shift();
     }
+
 }
 
 // function to check wincondition
@@ -81,14 +92,16 @@ function checkWinCondition() {
             for (let i = 0; i < winConditions.length; i += 1) {
                 if (playerZeroArr.every(elem => winConditions[i].includes(elem))) {
                     playerZeroArr.forEach(elem => boardElement.children[elem].classList.add('win'));
-                    return console.log(`${currentPlayer} has won`)
+                    gameFlag = true;
+                    return console.log(`${currentPlayer} has won`);
                 }
             }
         } else {
             for (let i = 0; i < winConditions.length; i += 1) {
                 if (playerOneArr.every(elem => winConditions[i].includes(elem))) {
                     playerOneArr.forEach(elem => boardElement.children[elem].classList.add('win'));
-                    return console.log(`${currentPlayer} has won`)
+                    gameFlag = true;
+                    return console.log(`${currentPlayer} has won`);
                 }
             }
         }
@@ -99,18 +112,18 @@ function checkWinCondition() {
 Array.from(boardElement.children).forEach((cell, index) => {
     cell.addEventListener('click', () => {
         clickedCell = boardElement.children[index];
-        if (clickedCell.textContent == '') {
+        if (!gameFlag && clickedCell.textContent == '') {
             if (currentPlayer === 0) {
                 clickedCell.textContent = playerZeroInput;
                 playerZeroArr.push(index);
-                removeFirst()
                 checkWinCondition()
+                removeFirst()
                 switchPlayer();
-            } else {
+            } else if (currentPlayer === 1) {
                 clickedCell.textContent = playerOneInput;
                 playerOneArr.push(index);
-                removeFirst()
                 checkWinCondition()
+                removeFirst()
                 switchPlayer();
             }
         }
@@ -126,5 +139,7 @@ function initGame() {
     playerZeroArr = new Array;
     playerOneArr = new Array;
     Array.from(boardElement.children).forEach(cell => cell.classList.remove('win'));
+    gameFlag = false;
 }
 
+// initGame();

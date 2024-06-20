@@ -1,6 +1,8 @@
 // selecting DOM elements
 let boardElement = document.querySelector('.board');
 let turnElement = document.querySelector('#turn');
+let playerZeroElem = document.querySelector('#playerZero');
+let playerOneElem = document.querySelector('#playerOne');
 
 //game Variables
 let currentPlayer = undefined;
@@ -36,16 +38,21 @@ function clearBoard() {
 // randomize for player order, will be needed it future
 function playerOrder() {
     currentPlayer = Math.floor(Math.random() * 2);
+    turnElement.style.visibility = 'visible';
     if (currentPlayer === playerZero) {
         console.log(`playerZero starts`)
         playerZeroInput = 'x';
         playerOneInput = 'o'; //○
+        playerZeroElem.textContent = `Player#1: ${playerZeroInput}`;
+        playerOneElem.textContent = `Player#2: ${playerOneInput}`;
         turnElement.style.marginLeft = 'calc(43% / 2 - 5%)';
     } else {
         console.log(`playerOne starts`);
         playerZeroInput = 'o';
         playerOneInput = 'x';
-        turnElement.style.marginLeft = 'calc(43% + 43% / 2 + 5%)';
+        playerZeroElem.textContent = `Player#1: ${playerZeroInput}`;
+        playerOneElem.textContent = `Player#2: ${playerOneInput}`;
+        turnElement.style.marginLeft = 'calc(50% + 43% / 2 - 5%)';
     }
 }
 
@@ -55,7 +62,7 @@ function switchPlayer() {
         if (currentPlayer != undefined) {
             if (currentPlayer === 0) {
                 currentPlayer = 1;
-                turnElement.style.marginLeft = 'calc(43% + 43% / 2 + 5%)';
+                turnElement.style.marginLeft = 'calc(50% + 43% / 2 - 5%)';
                 if (playerOneArr.length === 3) {
                     boardElement.children[playerOneArr[0]].classList.add('expiring');
                 }
@@ -116,14 +123,14 @@ Array.from(boardElement.children).forEach((cell, index) => {
             if (currentPlayer === 0) {
                 clickedCell.textContent = playerZeroInput;
                 playerZeroArr.push(index);
-                checkWinCondition()
                 removeFirst()
+                checkWinCondition()
                 switchPlayer();
             } else if (currentPlayer === 1) {
                 clickedCell.textContent = playerOneInput;
                 playerOneArr.push(index);
-                checkWinCondition()
                 removeFirst()
+                checkWinCondition()
                 switchPlayer();
             }
         }

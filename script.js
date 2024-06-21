@@ -1,6 +1,5 @@
 // selecting DOM elements
-let boardElement = document.querySelector('.board');
-let turnElement = document.querySelector('#turn');
+let boardElement = document.querySelector('#board');
 let playerZeroElem = document.querySelector('#playerZero');
 let playerOneElem = document.querySelector('#playerOne');
 
@@ -38,21 +37,22 @@ function clearBoard() {
 // randomize for player order, will be needed it future
 function playerOrder() {
     currentPlayer = Math.floor(Math.random() * 2);
-    turnElement.style.visibility = 'visible';
     if (currentPlayer === playerZero) {
         console.log(`playerZero starts`)
         playerZeroInput = 'x';
         playerOneInput = 'o'; //○
         playerZeroElem.textContent = `Player#1: ${playerZeroInput}`;
         playerOneElem.textContent = `Player#2: ${playerOneInput}`;
-        turnElement.style.marginLeft = 'calc(43% / 2 - 5%)';
+        playerZeroElem.style.backgroundColor = '#3498db'; // Blue for player 1
+        playerOneElem.style.backgroundColor = 'transparent'; // Transparent for player 2
     } else {
         console.log(`playerOne starts`);
         playerZeroInput = 'o';
         playerOneInput = 'x';
         playerZeroElem.textContent = `Player#1: ${playerZeroInput}`;
         playerOneElem.textContent = `Player#2: ${playerOneInput}`;
-        turnElement.style.marginLeft = 'calc(50% + 43% / 2 - 5%)';
+        playerZeroElem.style.backgroundColor = 'transparent'; // Transparent for player 1
+        playerOneElem.style.backgroundColor = '#3498db'; // Blue for player 2
     }
 }
 
@@ -62,13 +62,15 @@ function switchPlayer() {
         if (currentPlayer != undefined) {
             if (currentPlayer === 0) {
                 currentPlayer = 1;
-                turnElement.style.marginLeft = 'calc(50% + 43% / 2 - 5%)';
+                playerZeroElem.style.backgroundColor = 'transparent'; // Transparent for player 1
+                playerOneElem.style.backgroundColor = '#3498db'; // Blue for player 2
                 if (playerOneArr.length === 3) {
                     boardElement.children[playerOneArr[0]].classList.add('expiring');
                 }
             } else {
                 currentPlayer = 0;
-                turnElement.style.marginLeft = 'calc(43% / 2 - 5%)';
+                playerZeroElem.style.backgroundColor = '#3498db'; // Blue for player 1
+                playerOneElem.style.backgroundColor = 'transparent'; // Transparent for player 2
                 if (playerZeroArr.length === 3) {
                     boardElement.children[playerZeroArr[0]].classList.add('expiring');
                 }

@@ -2,6 +2,8 @@
 let boardElement = document.querySelector('#board');
 let playerZeroElem = document.querySelector('#playerZero');
 let playerOneElem = document.querySelector('#playerOne');
+let startGameBtnElem = document.querySelector('#startGame');
+let overlayElem = document.querySelector('.overlay');
 
 //game Variables
 let currentPlayer = undefined;
@@ -102,6 +104,7 @@ function checkWinCondition() {
                 if (playerZeroArr.every(elem => winConditions[i].includes(elem))) {
                     playerZeroArr.forEach(elem => boardElement.children[elem].classList.add('win'));
                     gameFlag = true;
+                    overlayElem.classList.remove('hidden');
                     return console.log(`${currentPlayer} has won`);
                 }
             }
@@ -110,6 +113,7 @@ function checkWinCondition() {
                 if (playerOneArr.every(elem => winConditions[i].includes(elem))) {
                     playerOneArr.forEach(elem => boardElement.children[elem].classList.add('win'));
                     gameFlag = true;
+                    overlayElem.classList.remove('hidden');
                     return console.log(`${currentPlayer} has won`);
                 }
             }
@@ -149,6 +153,8 @@ function initGame() {
     playerOneArr = new Array;
     Array.from(boardElement.children).forEach(cell => cell.classList.remove('win'));
     gameFlag = false;
+    overlayElem.classList.add('hidden');
 }
 
+startGameBtnElem.addEventListener('click', initGame);
 // initGame();

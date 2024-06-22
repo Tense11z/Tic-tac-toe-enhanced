@@ -4,6 +4,8 @@ let playerZeroElem = document.querySelector('#playerZero');
 let playerOneElem = document.querySelector('#playerOne');
 let startGameBtnElem = document.querySelector('#startGame');
 let overlayElem = document.querySelector('.overlay');
+let winnerElem = document.querySelector('#winner');
+let winnerTextElem = document.querySelector('#winnerText');
 
 //game Variables
 let currentPlayer = undefined;
@@ -14,6 +16,7 @@ let playerOneInput = '';
 let playerZeroArr = new Array;
 let playerOneArr = new Array;
 let gameFlag = false;
+let turnCounter = 0;
 const winConditions = [
     // Rows
     [0, 1, 2],
@@ -61,6 +64,7 @@ function playerOrder() {
 // function to switch player turn
 function switchPlayer() {
     if (!gameFlag) {
+        turnCounter += 1;
         if (currentPlayer != undefined) {
             if (currentPlayer === 0) {
                 currentPlayer = 1;
@@ -105,6 +109,7 @@ function checkWinCondition() {
                     playerZeroArr.forEach(elem => boardElement.children[elem].classList.add('win'));
                     gameFlag = true;
                     overlayElem.classList.remove('hidden');
+                    showWinner(playerZeroInput);
                     return console.log(`${currentPlayer} has won`);
                 }
             }
@@ -114,11 +119,18 @@ function checkWinCondition() {
                     playerOneArr.forEach(elem => boardElement.children[elem].classList.add('win'));
                     gameFlag = true;
                     overlayElem.classList.remove('hidden');
+                    showWinner(playerOneInput);
                     return console.log(`${currentPlayer} has won`);
                 }
             }
         }
     }
+}
+
+function showWinner(playerInput) {
+    winnerTextElem.textContent = `Player#${currentPlayer + 1} (${playerInput}) wins the game in ${turnCounter} steps`;
+    winnerElem.style.visibility = 'visible';
+    winnerElem.style.width = 'calc(100% - 6px)';
 }
 
 // click event that inserts character
@@ -151,9 +163,11 @@ function initGame() {
     playerOrder();
     playerZeroArr = new Array;
     playerOneArr = new Array;
-    Array.from(boardElement.children).forEach(cell => cell.classList.remove('win'));
     gameFlag = false;
+    turnCounter = 0;
+    Array.from(boardElement.children).forEach(cell => cell.classList.remove('win'));
     overlayElem.classList.add('hidden');
+    winnerElem.style.visibility = 'hidden';
 }
 
 startGameBtnElem.addEventListener('click', initGame);

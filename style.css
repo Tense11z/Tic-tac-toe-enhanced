@@ -15,7 +15,8 @@
     --cellSize: calc(min(100vh, 150vw)/1.7);
     --cellFontSize: calc(min(25dvh, 35dvw));
     --headerFontSize: calc(min(3dvh, 3dvw));
-    --playerTurnFontSize: calc(min(4dvh, 4dvw));
+    --playerTurnFontSize: calc(min(4dvh, 6dvw));
+    --playerWinFontSize: calc(min(3dvh, 4.5dvw));
 }
 
 body {
@@ -47,7 +48,8 @@ body {
     grid-template-columns: repeat(2, 1fr);
     font-size: var(--playerTurnFontSize);
     margin-top: 4%;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
+    overflow: hidden;
 }
 
 .align {
@@ -55,6 +57,27 @@ body {
     align-items: center;
 }
 
+
+#winner {
+    display: grid;
+    align-items: center;
+    align-self: center;
+    position: absolute;
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s linear;
+    z-index: 2;
+    background-color: #3498db;
+    height: calc(100% - 6px);
+    border: solid;
+    visibility: hidden;
+}
+
+#winnerText {
+    overflow: hidden;
+    width: 100dvw;
+    font-size: var(--playerWinFontSize);
+}
 
 .players {
     text-align: center;
@@ -66,6 +89,7 @@ body {
 }
 
 #game {
+    padding-top: 5%;
     height: auto;
     width: auto;
     display: flex;
@@ -142,17 +166,7 @@ body {
     z-index: 1;
 }
 
-#winner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: calc(100% - 6px);
-    height: 100%;
-    background-color: #3498db;
-    position: absolute;
-    z-index: 1;
-    border: solid;
-}
+
 
 #startGame {
     z-index: 2;

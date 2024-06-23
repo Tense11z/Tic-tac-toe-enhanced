@@ -2,7 +2,7 @@
 let boardElement = document.querySelector('#board');
 let playerZeroElem = document.querySelector('#playerZero');
 let playerOneElem = document.querySelector('#playerOne');
-let startGameBtnElem = document.querySelector('#startGame');
+let playGameBtnElem = document.querySelector('#playGame');
 let overlayElem = document.querySelector('.overlay');
 let winnerElem = document.querySelector('#winner');
 let winnerTextElem = document.querySelector('#winnerText');
@@ -57,7 +57,7 @@ function playerOrder() {
         playerZeroElem.textContent = `Player#1: ${playerZeroInput}`;
         playerOneElem.textContent = `Player#2: ${playerOneInput}`;
         playerZeroElem.style.backgroundColor = 'transparent'; // Transparent for player 1
-        playerOneElem.style.backgroundColor = '#3498db'; // Blue for player 2
+        playerOneElem.style.backgroundColor = '#B80E65'; // Blue for player 2
     }
 }
 
@@ -69,7 +69,7 @@ function switchPlayer() {
             if (currentPlayer === 0) {
                 currentPlayer = 1;
                 playerZeroElem.style.backgroundColor = 'transparent'; // Transparent for player 1
-                playerOneElem.style.backgroundColor = '#3498db'; // Blue for player 2
+                playerOneElem.style.backgroundColor = '#B80E65'; // Blue for player 2
                 if (playerOneArr.length === 3) {
                     boardElement.children[playerOneArr[0]].classList.add('expiring');
                 }
@@ -128,8 +128,14 @@ function checkWinCondition() {
 }
 
 function showWinner(playerInput) {
-    winnerTextElem.textContent = `Player#${currentPlayer + 1} (${playerInput}) wins the game in ${turnCounter} steps`;
-    winnerElem.style.visibility = 'visible';
+    winnerTextElem.textContent = `Player#${currentPlayer + 1} (${playerInput}) wins the game in ${turnCounter + 1} steps`;
+    if (currentPlayer === 0) {
+        winnerElem.style.backgroundColor = '#3498db';
+    } else {
+        winnerElem.style.backgroundColor = '#B80E65';
+    }
+    winnerElem.style.backgroundColor =
+        winnerElem.style.visibility = 'visible';
     winnerElem.style.width = 'calc(100% - 6px)';
 }
 
@@ -168,7 +174,8 @@ function initGame() {
     Array.from(boardElement.children).forEach(cell => cell.classList.remove('win'));
     overlayElem.classList.add('hidden');
     winnerElem.style.visibility = 'hidden';
+    winnerElem.style.width = '0';
 }
 
-startGameBtnElem.addEventListener('click', initGame);
+playGameBtnElem.addEventListener('click', initGame);
 // initGame();

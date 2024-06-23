@@ -1,25 +1,19 @@
 // selecting DOM elements
-let boardElement = document.querySelector('#board');
-let playerZeroElem = document.querySelector('#playerZero');
-let playerOneElem = document.querySelector('#playerOne');
-let playGameBtnElem = document.querySelector('#playGame');
-let overlayElem = document.querySelector('.overlay');
-let winnerElem = document.querySelector('#winner');
-let winnerTextElem = document.querySelector('#winnerText');
+const boardElement = document.querySelector('#board');
+const playerZeroElem = document.querySelector('#playerZero');
+const playerOneElem = document.querySelector('#playerOne');
+const playGameBtnElem = document.querySelector('#playGame');
+const overlayElem = document.querySelector('.overlay');
+const winnerElem = document.querySelector('#winner');
+const winnerTextElem = document.querySelector('#winnerText');
 
 //game Variables
 let currentPlayer = undefined;
-let playerZero = 0;
-let playerOne = 1;
-let playerZeroInput = '';
-let playerOneInput = '';
-let playerZeroArr = new Array;
-let playerOneArr = new Array;
 let gameFlag = false;
 let turnCounter = 0;
 let players = {
-    0: { order: null, input: '', colorB: '#3498db', colorC: '#3498db', inputArr: [] },
-    1: { order: null, input: '', colorB: '#B80E65', colorC: '#B80E65', inputArr: [] }
+    0: { input: '', colorB: '#3498db', colorC: '#3498db', inputArr: [] },
+    1: { input: '', colorB: '#B80E65', colorC: '#B80E65', inputArr: [] }
 };
 const winConditions = [
     // Rows
@@ -36,7 +30,7 @@ const winConditions = [
 ];
 
 
-// function to clear board
+// function to clear board and players' input arrays
 function clearBoard() {
     for (child of boardElement.children) {
         child.textContent = '';
@@ -47,6 +41,7 @@ function clearBoard() {
 }
 
 
+// function to display player inputs and switch background colors
 function switchContent() {
     switch (currentPlayer) {
         case (0):
@@ -68,6 +63,7 @@ function switchContent() {
 }
 
 
+// function to define player inputs & order
 function playerOrder() {
     if (!gameFlag) {
         console.log(currentPlayer);
@@ -87,6 +83,7 @@ function playerOrder() {
 }
 
 
+// function to switch players' turn
 function switchPlayer() {
     if (!gameFlag) {
         turnCounter += 1;
@@ -100,19 +97,24 @@ function switchPlayer() {
                 switchContent();
                 break;
         }
+        if (players[currentPlayer].inputArr.length === 3) {
+            boardElement.children[players[currentPlayer].inputArr[0]].classList.add('expiring');
+        }
     }
 }
 
 
+// function that resets div content which position == 0 in players' array
 function removeFirst() {
     if (players[currentPlayer].inputArr.length > 3) {
         boardElement.children[players[currentPlayer].inputArr[0]].textContent = '';
         boardElement.children[players[currentPlayer].inputArr[0]].classList.remove('expiring');
-        playerZeroArr.shift();
+        players[currentPlayer].inputArr.shift();
     }
 }
 
 
+// function to check win conditions
 function checkWinCondition() {
     if (players[currentPlayer].inputArr.length === 3) {
         for (let i = 0; i < winConditions.length; i += 1) {
@@ -121,13 +123,13 @@ function checkWinCondition() {
                 gameFlag = true;
                 overlayElem.classList.remove('hidden');
                 showWinner(players[currentPlayer].input);
-                return console.log(`${currentPlayer} has won`);
             }
         }
     }
 }
 
 
+// function to display win message
 function showWinner(playerInput) {
     winnerTextElem.textContent = `Player#${currentPlayer + 1} (${playerInput}) wins the game in ${turnCounter + 1} steps`;
     winnerElem.style.backgroundColor = players[currentPlayer].colorB;
@@ -136,6 +138,7 @@ function showWinner(playerInput) {
 }
 
 
+// function to receive player input by clicking the div
 Array.from(boardElement.children).forEach((cell, index) => {
     cell.addEventListener('click', () => {
         clickedCell = boardElement.children[index];
@@ -164,5 +167,5 @@ function initGame() {
     playerOrder();
 }
 
+// event listener for button to start game
 playGameBtnElem.addEventListener('click', initGame);
-// initGame();

@@ -133,8 +133,7 @@ function checkWinCondition() {
 function showWinner(playerInput) {
     winnerTextElem.textContent = `Player#${currentPlayer + 1} (${playerInput}) wins the game in ${turnCounter + 1} steps`;
     winnerElem.style.backgroundColor = players[currentPlayer].colorB;
-    winnerElem.style.visibility = 'visible';
-    winnerElem.style.width = 'calc(100% - 6px)';
+    winnerElem.style.opacity = '1';
 }
 
 
@@ -161,8 +160,7 @@ function initGame() {
     currentPlayer = Math.floor(Math.random() * 2);
     Array.from(boardElement.children).forEach(cell => cell.classList.remove('win'));
     overlayElem.classList.add('hidden');
-    winnerElem.style.visibility = 'hidden';
-    winnerElem.style.width = '0';
+    winnerElem.style.opacity = '0';
     clearBoard();
     playerOrder();
 }

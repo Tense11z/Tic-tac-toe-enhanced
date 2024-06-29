@@ -1,22 +1,20 @@
 // selecting DOM elements
-let boardElement = document.querySelector('#board');
-let playerZeroElem = document.querySelector('#playerZero');
-let playerOneElem = document.querySelector('#playerOne');
-let playGameBtnElem = document.querySelector('#playGame');
-let overlayElem = document.querySelector('.overlay');
-let winnerElem = document.querySelector('#winner');
-let winnerTextElem = document.querySelector('#winnerText');
+const boardElement = document.querySelector('#board');
+const playerZeroElem = document.querySelector('#playerZero');
+const playerOneElem = document.querySelector('#playerOne');
+const playGameBtnElem = document.querySelector('#playGame');
+const overlayElem = document.querySelector('.overlay');
+const winnerElem = document.querySelector('#winner');
+const winnerTextElem = document.querySelector('#winnerText');
 
 //game Variables
 let currentPlayer = undefined;
-let playerZero = 0;
-let playerOne = 1;
-let playerZeroInput = '';
-let playerOneInput = '';
-let playerZeroArr = new Array;
-let playerOneArr = new Array;
 let gameFlag = false;
 let turnCounter = 0;
+let players = {
+    0: { input: '', colorB: '#3498db', colorC: '#3498db', inputArr: [] },
+    1: { input: '', colorB: '#B80E65', colorC: '#B80E65', inputArr: [] }
+};
 const winConditions = [
     // Rows
     [0, 1, 2],
@@ -32,150 +30,142 @@ const winConditions = [
 ];
 
 
-// function to clear board
+// function to clear board and players' input arrays
 function clearBoard() {
     for (child of boardElement.children) {
         child.textContent = '';
     }
-}
-
-// randomize for player order, will be needed it future
-function playerOrder() {
-    currentPlayer = Math.floor(Math.random() * 2);
-    if (currentPlayer === playerZero) {
-        console.log(`playerZero starts`)
-        playerZeroInput = 'x';
-        playerOneInput = 'o'; //○
-        playerZeroElem.textContent = `Player#1: ${playerZeroInput}`;
-        playerOneElem.textContent = `Player#2: ${playerOneInput}`;
-        playerZeroElem.style.backgroundColor = '#3498db'; // Blue for player 1
-        playerOneElem.style.backgroundColor = 'transparent'; // Transparent for player 2
-    } else {
-        console.log(`playerOne starts`);
-        playerZeroInput = 'o';
-        playerOneInput = 'x';
-        playerZeroElem.textContent = `Player#1: ${playerZeroInput}`;
-        playerOneElem.textContent = `Player#2: ${playerOneInput}`;
-        playerZeroElem.style.backgroundColor = 'transparent'; // Transparent for player 1
-        playerOneElem.style.backgroundColor = '#B80E65'; // Blue for player 2
+    for (let key in players) {
+        players[key].inputArr = [];
     }
 }
 
-// function to switch player turn
+
+// function to display player inputs and switch background colors
+function switchContent() {
+    switch (currentPlayer) {
+        case (0):
+            playerZeroElem.textContent = `Player#1: ${players[0].input}`;
+            playerOneElem.textContent = `Player#2: ${players[1].input}`;
+            playerZeroElem.style.backgroundColor = players[0].colorB; // Blue for player 1
+            playerOneElem.style.backgroundColor = 'transparent';
+            break;
+        case (1):
+            playerZeroElem.textContent = `Player#1: ${players[0].input}`;
+            playerOneElem.textContent = `Player#2: ${players[1].input}`;
+            playerZeroElem.style.backgroundColor = 'transparent'; // Blue for player 1
+            playerOneElem.style.backgroundColor = players[1].colorB;
+            break;
+        default:
+            console.log('Unexpected player');
+            break;
+    }
+}
+
+
+// function to define player inputs & order
+function playerOrder() {
+    if (!gameFlag) {
+        console.log(currentPlayer);
+        switch (currentPlayer) {
+            case (0):
+                players[0].input = 'x';
+                players[1].input = 'o';
+                switchContent()
+                break;
+            case (1):
+                players[0].input = 'o';
+                players[1].input = 'x';
+                switchContent()
+                break;
+        }
+    }
+}
+
+
+// function to switch players' turn
 function switchPlayer() {
     if (!gameFlag) {
         turnCounter += 1;
-        if (currentPlayer != undefined) {
-            if (currentPlayer === 0) {
+        switch (currentPlayer) {
+            case (0):
                 currentPlayer = 1;
-                playerZeroElem.style.backgroundColor = 'transparent'; // Transparent for player 1
-                playerOneElem.style.backgroundColor = '#B80E65'; // Blue for player 2
-                if (playerOneArr.length === 3) {
-                    boardElement.children[playerOneArr[0]].classList.add('expiring');
-                }
-            } else {
+                switchContent();
+                break;
+            case (1):
                 currentPlayer = 0;
-                playerZeroElem.style.backgroundColor = '#3498db'; // Blue for player 1
-                playerOneElem.style.backgroundColor = 'transparent'; // Transparent for player 2
-                if (playerZeroArr.length === 3) {
-                    boardElement.children[playerZeroArr[0]].classList.add('expiring');
-                }
-            }
+                switchContent();
+                break;
+        }
+        if (players[currentPlayer].inputArr.length === 3) {
+            boardElement.children[players[currentPlayer].inputArr[0]].classList.add('expiring');
         }
     }
 }
 
-// function to remove 1st input in case player's input amount >3
+
+// function that resets div content which position == 0 in players' array
 function removeFirst() {
-    if (playerZeroArr.length > 3) {
-        boardElement.children[playerZeroArr[0]].textContent = '';
-        boardElement.children[playerZeroArr[0]].classList.remove('expiring');
-        playerZeroArr.shift();
+    if (players[currentPlayer].inputArr.length > 3) {
+        boardElement.children[players[currentPlayer].inputArr[0]].textContent = '';
+        boardElement.children[players[currentPlayer].inputArr[0]].classList.remove('expiring');
+        players[currentPlayer].inputArr.shift();
     }
-    if (playerOneArr.length > 3) {
-        boardElement.children[playerOneArr[0]].textContent = '';
-        boardElement.children[playerOneArr[0]].classList.remove('expiring');
-        playerOneArr.shift();
-    }
-
 }
 
-// function to check wincondition
+
+// function to check win conditions
 function checkWinCondition() {
-    if (playerOneArr.length == 3 || playerZeroArr.length == 3) {
-        if (currentPlayer === 0) {
-            for (let i = 0; i < winConditions.length; i += 1) {
-                if (playerZeroArr.every(elem => winConditions[i].includes(elem))) {
-                    playerZeroArr.forEach(elem => boardElement.children[elem].classList.add('win'));
-                    gameFlag = true;
-                    overlayElem.classList.remove('hidden');
-                    showWinner(playerZeroInput);
-                    return console.log(`${currentPlayer} has won`);
-                }
-            }
-        } else {
-            for (let i = 0; i < winConditions.length; i += 1) {
-                if (playerOneArr.every(elem => winConditions[i].includes(elem))) {
-                    playerOneArr.forEach(elem => boardElement.children[elem].classList.add('win'));
-                    gameFlag = true;
-                    overlayElem.classList.remove('hidden');
-                    showWinner(playerOneInput);
-                    return console.log(`${currentPlayer} has won`);
-                }
+    if (players[currentPlayer].inputArr.length === 3) {
+        for (let i = 0; i < winConditions.length; i += 1) {
+            if (players[currentPlayer].inputArr.every(elem => winConditions[i].includes(elem))) {
+                players[currentPlayer].inputArr.forEach(elem => boardElement.children[elem].classList.add('win'));
+                gameFlag = true;
+                overlayElem.classList.remove('hidden');
+                showWinner(players[currentPlayer].input);
             }
         }
     }
 }
 
+
+// function to display win message
 function showWinner(playerInput) {
     winnerTextElem.textContent = `Player#${currentPlayer + 1} (${playerInput}) wins the game in ${turnCounter + 1} steps`;
-    if (currentPlayer === 0) {
-        winnerElem.style.backgroundColor = '#3498db';
-    } else {
-        winnerElem.style.backgroundColor = '#B80E65';
-    }
-    winnerElem.style.backgroundColor =
-        winnerElem.style.visibility = 'visible';
+    winnerElem.style.backgroundColor = players[currentPlayer].colorB;
+    winnerElem.style.visibility = 'visible';
     winnerElem.style.width = 'calc(100% - 6px)';
 }
 
-// click event that inserts character
+
+// function to receive player input by clicking the div
 Array.from(boardElement.children).forEach((cell, index) => {
     cell.addEventListener('click', () => {
         clickedCell = boardElement.children[index];
         if (!gameFlag && clickedCell.textContent == '') {
-            if (currentPlayer === 0) {
-                clickedCell.textContent = playerZeroInput;
-                playerZeroArr.push(index);
-                removeFirst()
-                checkWinCondition()
-                switchPlayer();
-            } else if (currentPlayer === 1) {
-                clickedCell.textContent = playerOneInput;
-                playerOneArr.push(index);
-                removeFirst()
-                checkWinCondition()
-                switchPlayer();
-            }
+            clickedCell.textContent = players[currentPlayer].input;
+            players[currentPlayer].inputArr.push(index);
+            removeFirst()
+            checkWinCondition()
+            switchPlayer();
         }
-        console.log(index, playerZeroArr, playerOneArr);
+        console.log(index, players[0].inputArr, players[1].inputArr);
     });
 });
 
 
 // function to start/reset game
 function initGame() {
-    clearBoard();
-    playerOrder();
-    playerZeroArr = new Array;
-    playerOneArr = new Array;
     gameFlag = false;
     turnCounter = 0;
+    currentPlayer = Math.floor(Math.random() * 2);
     Array.from(boardElement.children).forEach(cell => cell.classList.remove('win'));
     overlayElem.classList.add('hidden');
     winnerElem.style.visibility = 'hidden';
     winnerElem.style.width = '0';
+    clearBoard();
+    playerOrder();
 }
 
+// event listener for button to start game
 playGameBtnElem.addEventListener('click', initGame);
-// initGame();
